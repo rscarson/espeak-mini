@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "*.tpl": "html",
+        "*.inc": "php",
+        "*.service": "php",
+        "*.out": "plaintext",
+        "*.pest": "pest",
+        "*.tmTheme": "xml",
+        "synthdata.h": "c",
+        "stdint.h": "c"
+    }
+}
