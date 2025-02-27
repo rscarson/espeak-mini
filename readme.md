@@ -12,3 +12,5 @@ Compile it with `make all`
 espeak-ng is the copyright of its respective owners, I have only modified it to be more portable and easier to use in my project.
 
 This project is licensed under GPLv3, just like espeak-ng itself.
+
+NOTE: For some reason the makefile crashes on the first attempt - until I fix it you can compile with `make all & make all`
