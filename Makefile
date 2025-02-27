@@ -39,7 +39,7 @@ clean:
 # Compiles the static library
 all: $(LIB_DIR)/$(LIB_OUT) example/example$(EXEC_EXT)
 $(LIB_DIR)/$(LIB_OUT): $(OBJ) $(UCD)
-	ar rcs -o $@ $^
+	ar rcs $@ $^
 
 # Build the example project
 example/example$(EXEC_EXT): example/example.c $(LIB_DIR)/$(LIB_OUT)
