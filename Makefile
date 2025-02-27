@@ -39,8 +39,8 @@ clean:
 # Compiles the static library
 all: $(LIB_DIR)/$(LIB_OUT) example/example$(EXEC_EXT)
 $(LIB_DIR)/$(LIB_OUT): $(OBJ) $(UCD)
-	ar rcs -o $(LIB_DIR)/$@ $^
+	ar rcs -o $@ $^
 
 # Build the example project
 example/example$(EXEC_EXT): example/example.c $(LIB_DIR)/$(LIB_OUT)
-	$(CC) -o $@ $< -L$(LIB_DIR) -lespeak_mini
+	$(CC) -o $@ $< -Iinclude -L$(LIB_DIR) -lespeak_mini

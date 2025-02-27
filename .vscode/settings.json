@@ -10,6 +10,7 @@
         "stdint.h": "c",
         "espeak_ng.h": "c",
         "translate.h": "c",
-        "synthesize.h": "c"
+        "synthesize.h": "c",
+        "xutility": "c"
     }
 }
