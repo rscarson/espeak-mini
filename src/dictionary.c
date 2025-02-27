@@ -193,6 +193,66 @@ static void InitGroups(Translator *tr)
 	}
 }
 
+int LoadDictionaryFromBuffer(Translator *tr, const char *name, const char* data, long size, int no_error)
+{
+	int hash;
+	char *p;
+	int *pw;
+	int length;
+
+	if (dictionary_name != name)
+		strncpy(dictionary_name, name, 40); // currently loaded dictionary name
+	if (tr->dictionary_name != name)
+		strncpy(tr->dictionary_name, name, 40);
+
+	// Load a pronunciation data file into memory
+	// bytes 0-3:  offset to rules data
+	// bytes 4-7:  number of hash table entries
+
+	if (tr->data_dictlist != NULL) {
+		free(tr->data_dictlist);
+		tr->data_dictlist = NULL;
+	}
+
+	if ((tr->data_dictlist = malloc(size)) == NULL) {
+		return 3;
+	}
+	memcpy(tr->data_dictlist, data, size);
+
+	pw = (int *)(tr->data_dictlist);
+	length = Reverse4Bytes(pw[1]);
+
+	if (size <= (N_HASH_DICT + sizeof(int)*2)) {
+		fprintf(stderr, "Empty _dict file");
+		return 2;
+	}
+
+	if ((Reverse4Bytes(pw[0]) != N_HASH_DICT) ||
+	    (length <= 0) || (length > 0x8000000)) {
+		fprintf(stderr, "Bad data: (%x length=%x)\n", Reverse4Bytes(pw[0]), length);
+		return 2;
+	}
+	tr->data_dictrules = &(tr->data_dictlist[length]);
+
+	// set up indices into data_dictrules
+	InitGroups(tr);
+
+	// set up hash table for data_dictlist
+	p = &(tr->data_dictlist[8]);
+
+	for (hash = 0; hash < N_HASH_DICT; hash++) {
+		tr->dict_hashtab[hash] = p;
+		while ((length = *(uint8_t *)p) != 0)
+			p += length;
+		p++; // skip over the zero which terminates the list for this hash value
+	}
+
+	if ((tr->dict_min_size > 0) && (size < (unsigned int)tr->dict_min_size))
+		fprintf(stderr, "Full dictionary is not installed for '%s'\n", name);
+
+	return 0;
+}
+
 int LoadDictionary(Translator *tr, const char *name, int no_error)
 {
 	int hash;

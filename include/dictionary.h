@@ -33,6 +33,7 @@ extern "C"
 
 extern const char stress_phonemes[];
 
+int LoadDictionaryFromBuffer(Translator *tr, const char *name, const char* data, long size, int no_error);
 int LoadDictionary(Translator *tr, const char *name, int no_error);
 int HashDictionary(const char *string);
 const char *EncodePhonemes(const char *p, char *outptr, int *bad_phoneme);

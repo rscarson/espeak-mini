@@ -686,11 +686,11 @@ text_decoder_decode_string(espeak_ng_TEXT_DECODER *decoder,
 {
 	if (encoding > ESPEAKNG_ENCODING_ISO_10646_UCS_2)
 		return ENS_UNKNOWN_TEXT_ENCODING;
-
+		
 	const encoding_t *enc = string_decoders + encoding;
 	if (enc->get == NULL)
 		return ENS_UNKNOWN_TEXT_ENCODING;
-
+		
 	if (length < 0) length = string ? strlen(string) + 1 : 0;
 
 	decoder->get = string ? enc->get : null_decoder_getc;

@@ -43,7 +43,7 @@ void InterpretPhoneme2(int phcode,
 
 void FreePhData(void);
 const unsigned char *GetEnvelope(int index);
-espeak_ng_STATUS LoadPhData(int *srate, espeak_ng_ERROR_CONTEXT *context);
+espeak_ng_STATUS LoadPhData(int *srate, espeak_ng_ERROR_CONTEXT *context, PHONEME_CONFIGS *data);
 int LookupPhonemeString(const char *string);
 int LookupPhonemeTable(const char *name);
 frameref_t *LookupSpect(PHONEME_TAB *this_ph,

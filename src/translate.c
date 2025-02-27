@@ -220,11 +220,32 @@ static void SetPlist2(PHONEME_LIST2 *p, unsigned char phcode)
 	embedded_flag = 0;
 }
 
-static int CountSyllables(unsigned char *phonemes)
+// Returns the index of the last char of the current syllable
+int NextSyllable(unsigned char *phonemes)
+{
+	int i = 0;
+	int phon;
+	while ((phon = phonemes[i++]) != 0) {
+		if (phoneme_tab[phon] == NULL) {
+			// unknown phoneme
+			continue;
+		}
+		if (phoneme_tab[phon]->type == phVOWEL) {
+			break;
+		}
+	}
+	return i > strlen((char *)phonemes) ? 0 : i;
+}
+
+int CountSyllables(unsigned char *phonemes)
 {
 	int count = 0;
 	int phon;
 	while ((phon = *phonemes++) != 0) {
+		if (phoneme_tab[phon] == NULL) {
+			// unknown phoneme
+			continue;
+		}
 		if (phoneme_tab[phon]->type == phVOWEL)
 			count++;
 	}

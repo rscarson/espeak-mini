@@ -302,42 +302,6 @@ ESPEAK_NG_API espeak_ng_STATUS espeak_ng_InitializeOutput(espeak_ng_OUTPUT_MODE 
 	return ENS_OK;
 }
 
-
-ESPEAK_NG_API void espeak_ng_InitializePath(const char *path)
-{
-	if (check_data_path(path, 1))
-		return;
-
-#if PLATFORM_WINDOWS
-	HKEY RegKey;
-	unsigned long size;
-	unsigned long var_type;
-	unsigned char buf[sizeof(path_home)-13];
-
-	if (check_data_path(getenv("ESPEAK_DATA_PATH"), 1))
-		return;
-
-	buf[0] = 0;
-	RegOpenKeyExA(HKEY_LOCAL_MACHINE, "Software\\eSpeak NG", 0, KEY_READ, &RegKey);
-	if (RegKey == NULL)
-		RegOpenKeyExA(HKEY_LOCAL_MACHINE, "Software\\WOW6432Node\\eSpeak NG", 0, KEY_READ, &RegKey);
-	size = sizeof(buf);
-	var_type = REG_SZ;
-	RegQueryValueExA(RegKey, "Path", 0, &var_type, buf, &size);
-
-	if (check_data_path(buf, 1))
-		return;
-#elif !defined(PLATFORM_DOS)
-	if (check_data_path(getenv("ESPEAK_DATA_PATH"), 1))
-		return;
-
-	if (check_data_path(getenv("HOME"), 0))
-		return;
-#endif
-
-	strcpy(path_home, PATH_ESPEAK_DATA);
-}
-
 const int param_defaults[N_SPEECH_PARAM] = {
 	0,   // silence (internal use)
 	espeakRATE_NORMAL, // rate wpm
@@ -357,7 +321,7 @@ const int param_defaults[N_SPEECH_PARAM] = {
 };
 
 
-ESPEAK_NG_API espeak_ng_STATUS espeak_ng_Initialize(espeak_ng_ERROR_CONTEXT *context)
+ESPEAK_NG_API espeak_ng_STATUS espeak_ng_Initialize(espeak_ng_ERROR_CONTEXT *context, PHONEME_CONFIGS *data)
 {
 	int param;
 	int srate = 22050; // default sample rate 22050 Hz
@@ -372,7 +336,7 @@ ESPEAK_NG_API espeak_ng_STATUS espeak_ng_Initialize(espeak_ng_ERROR_CONTEXT *con
 		}
 	}
 
-	espeak_ng_STATUS result = LoadPhData(&srate, context);
+	espeak_ng_STATUS result = LoadPhData(&srate, context, data);
 	if (result != ENS_OK)
 		return result;
 

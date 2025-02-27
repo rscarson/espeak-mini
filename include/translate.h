@@ -652,6 +652,8 @@ extern int dictionary_skipwords;
 #define LEADING_2_BITS 0xC0 // 0b11000000
 #define UTF8_TAIL_BITS 0x80 // 0b10000000
 
+int NextSyllable(unsigned char *phonemes);
+int CountSyllables(unsigned char *phonemes);
 int lookupwchar(const unsigned short *list, int c);
 char *strchr_w(const char *s, int c);
 void InitNamedata(void);

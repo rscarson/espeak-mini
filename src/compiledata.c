@@ -2351,7 +2351,7 @@ espeak_ng_CompilePhonemeDataPath(long rate,
 	}
 
 	samplerate = rate;
-	LoadPhData(NULL, NULL);
+	LoadPhData(NULL, NULL, NULL);
 	if (LoadVoice("", 8/*compiling phonemes*/) == NULL) {
 		clean_context(ctx);
 		return ENS_VOICE_NOT_FOUND;
@@ -2457,7 +2457,7 @@ espeak_ng_CompilePhonemeDataPath(long rate,
 	if (ctx->f_prog_log != NULL)
 		fclose(ctx->f_prog_log);
 
-	LoadPhData(NULL, NULL);
+	LoadPhData(NULL, NULL, NULL);
 
 	WavegenFini();
 
@@ -2777,7 +2777,7 @@ espeak_ng_CompileIntonationPath(const char *source_path,
 
 	fprintf(log, "Compiled %d intonation tunes: %d errors.\n", n_tune_names, ctx->error_count);
 
-	LoadPhData(NULL, NULL);
+	LoadPhData(NULL, NULL, NULL);
 
 	int res = ctx->error_count > 0 ? ENS_COMPILE_ERROR : ENS_OK;
 	clean_context(ctx);

@@ -46,11 +46,10 @@ static espeak_ERROR status_to_espeak_error(espeak_ng_STATUS status)
 
 #pragma GCC visibility push(default)
 
-int espeak_Initialize(espeak_AUDIO_OUTPUT output_type, int buf_length, const char *path, int options)
+int espeak_Initialize(espeak_AUDIO_OUTPUT output_type, int buf_length, PHONEME_CONFIGS *data, int options)
 {
-	espeak_ng_InitializePath(path);
 	espeak_ng_ERROR_CONTEXT context = NULL;
-	espeak_ng_STATUS result = espeak_ng_Initialize(&context);
+	espeak_ng_STATUS result = espeak_ng_Initialize(&context, data);
 	if (result != ENS_OK) {
 		espeak_ng_PrintStatusCodeMessage(result, stderr, context);
 		espeak_ng_ClearErrorContext(&context);
@@ -116,6 +115,21 @@ espeak_ERROR espeak_SetParameter(espeak_PARAMETER parameter, int value, int rela
 espeak_ERROR espeak_SetPunctuationList(const wchar_t *punctlist)
 {
 	return status_to_espeak_error(espeak_ng_SetPunctuationList(punctlist));
+}
+
+int espeak_NextSyllable(unsigned char *text)
+{
+	return NextSyllable(text);
+}
+
+int espeak_CountSyllables(unsigned char *text)
+{
+	return CountSyllables(text);
+}
+
+espeak_ERROR espeak_SetVoiceByBuffer(const char *name, char* data, long size, const char* dict, long dict_size)
+{
+	return status_to_espeak_error(espeak_ng_SetVoiceByBuffer(name, data, size, dict, dict_size));
 }
 
 espeak_ERROR espeak_SetVoiceByName(const char *name)

@@ -94,11 +94,8 @@ espeak_ng_PrintStatusCodeMessage(espeak_ng_STATUS status,
                                  FILE *out,
                                  espeak_ng_ERROR_CONTEXT context);
 
-ESPEAK_NG_API void
-espeak_ng_InitializePath(const char *path);
-
 ESPEAK_NG_API espeak_ng_STATUS
-espeak_ng_Initialize(espeak_ng_ERROR_CONTEXT *context);
+espeak_ng_Initialize(espeak_ng_ERROR_CONTEXT *context, PHONEME_CONFIGS *data);
 
 ESPEAK_NG_API espeak_ng_STATUS
 espeak_ng_InitializeOutput(espeak_ng_OUTPUT_MODE output_mode,
@@ -118,6 +115,9 @@ espeak_ng_SetPhonemeEvents(int enable, int ipa);
 
 ESPEAK_NG_API espeak_ng_STATUS
 espeak_ng_SetPunctuationList(const wchar_t *punctlist);
+
+ESPEAK_NG_API espeak_ng_STATUS
+espeak_ng_SetVoiceByBuffer(const char *vname, const char *data, long size, const char* dict, long dict_size);
 
 ESPEAK_NG_API espeak_ng_STATUS
 espeak_ng_SetVoiceByName(const char *name);

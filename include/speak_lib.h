@@ -143,6 +143,20 @@ typedef enum {
 	EE_NOT_FOUND=2
 } espeak_ERROR;
 
+typedef struct {
+	char* intonations;
+	long intonation_len;
+
+	char* data;
+	long data_len;
+
+	char* index;
+	long index_len;
+
+	char* tab;
+	long tab_len;
+} PHONEME_CONFIGS;
+
 #define espeakINITIALIZE_PHONEME_EVENTS 0x0001
 #define espeakINITIALIZE_PHONEME_IPA   0x0002
 #define espeakINITIALIZE_DONT_EXIT     0x8000
@@ -150,7 +164,7 @@ typedef enum {
 #ifdef __cplusplus
 extern "C"
 #endif
-int espeak_Initialize(espeak_AUDIO_OUTPUT output, int buflength, const char *path, int options);
+int espeak_Initialize(espeak_AUDIO_OUTPUT output, int buflength, PHONEME_CONFIGS *data, int options);
 /* Must be called before any synthesis functions are called.
    output: the audio data can either be played by eSpeak or passed back by the SynthCallback function.
 
@@ -586,6 +600,21 @@ espeak_ERROR espeak_SetVoiceByName(const char *name);
              you may try after a while to call the function again.
 	   EE_INTERNAL_ERROR.
 */
+
+#ifdef __cplusplus
+extern "C"
+#endif
+int espeak_CountSyllables(unsigned char *text);
+
+#ifdef __cplusplus
+extern "C"
+#endif
+int espeak_NextSyllable(unsigned char *text);
+
+#ifdef __cplusplus
+extern "C"
+#endif
+espeak_ERROR espeak_SetVoiceByBuffer(const char *name, char* data, long size, const char* dict, long dict_size);
 
 #ifdef __cplusplus
 extern "C"

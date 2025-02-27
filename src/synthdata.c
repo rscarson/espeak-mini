@@ -63,51 +63,36 @@ int phoneme_tab_number = 0;
 
 int seq_len_adjust;
 
-static espeak_ng_STATUS ReadPhFile(void **ptr, const char *fname, int *size, espeak_ng_ERROR_CONTEXT *context)
+static espeak_ng_STATUS ReadPhFile(void **ptr, const char *contents, int length, int *size, espeak_ng_ERROR_CONTEXT *context)
 {
 	if (!ptr) return EINVAL;
-
-	FILE *f_in;
-	int length;
-	char buf[sizeof(path_home)+40];
-
-	sprintf(buf, "%s%c%s", path_home, PATHSEP, fname);
-	length = GetFileLength(buf);
-	if (length < 0) // length == -errno
-		return create_file_error_context(context, -length, buf);
-
-	if ((f_in = fopen(buf, "rb")) == NULL)
-		return create_file_error_context(context, errno, buf);
 
 	if (*ptr != NULL) {
 		free(*ptr);
 		*ptr = NULL;
-	}
+		if (*ptr != NULL) {
+			free(*ptr);
+			*ptr = NULL;
+		}
+		
+		if (length == 0) {
+			*ptr = NULL;
+			return 0;
+		}
 	
-	if (length == 0) {
-		*ptr = NULL;
-		return 0;
+		if ((*ptr = malloc(length)) == NULL) {
+			return ENOMEM;
+		}
+
+		memcpy(*ptr, contents, length);
 	}
 
-	if ((*ptr = malloc(length)) == NULL) {
-		fclose(f_in);
-		return ENOMEM;
-	}
-	if (fread(*ptr, 1, length, f_in) != length) {
-		int error = errno;
-		fclose(f_in);
-		free(*ptr);
-		*ptr = NULL;
-		return create_file_error_context(context, error, buf);
-	}
-
-	fclose(f_in);
 	if (size != NULL)
 		*size = length;
 	return ENS_OK;
 }
 
-espeak_ng_STATUS LoadPhData(int *srate, espeak_ng_ERROR_CONTEXT *context)
+espeak_ng_STATUS LoadPhData(int *srate, espeak_ng_ERROR_CONTEXT *context, PHONEME_CONFIGS *data)
 {
 	int ix;
 	int version;
@@ -115,15 +100,22 @@ espeak_ng_STATUS LoadPhData(int *srate, espeak_ng_ERROR_CONTEXT *context)
 	int rate;
 	unsigned char *p;
 
+	phoneme_tab_data = data->tab;
+	phoneme_index = data->index;
+	phondata_ptr = data->data;
+	tunes = data->intonations;
+
+	/*
+
 	espeak_ng_STATUS status;
-	if ((status = ReadPhFile((void **)&phoneme_tab_data, "phontab", NULL, context)) != ENS_OK)
+	if ((status = ReadPhFile((void **)&phoneme_tab_data, data->tab, data->tab_len, NULL, context)) != ENS_OK)
 		return status;
-	if ((status = ReadPhFile((void **)&phoneme_index, "phonindex", NULL, context)) != ENS_OK)
+	if ((status = ReadPhFile((void **)&phoneme_index, data->index, data->index_len, NULL, context)) != ENS_OK)
 		return status;
-	if ((status = ReadPhFile((void **)&phondata_ptr, "phondata", NULL, context)) != ENS_OK)
+	if ((status = ReadPhFile((void **)&phondata_ptr, data->data, data->data_len, NULL, context)) != ENS_OK)
 		return status;
-	if ((status = ReadPhFile((void **)&tunes, "intonations", &length, context)) != ENS_OK)
-		return status;
+	if ((status = ReadPhFile((void **)&tunes, data->intonations, data->intonation_len, &length, context)) != ENS_OK)
+		return status;*/
 	wavefile_data = (unsigned char *)phondata_ptr;
 	n_tunes = length / sizeof(TUNE);
 
